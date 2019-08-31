@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Bonsai.Domain;
-using Bonsai.Persistence.Helpers;
 using Bonsai.Persistence.Context;
+using Bonsai.Persistence.Helpers;
+using Microsoft.EntityFrameworkCore;
+using BL = Bonsai.Domain;
+using DB = Bonsai.Persistence.Model;
 
 namespace Bonsai.Persistence.Repositories
 {
@@ -18,7 +19,7 @@ namespace Bonsai.Persistence.Repositories
             this.passwordHelper = passwordHelper;
         }
 
-        public UserAccount GetAccountById(long id)
+        public BL.UserAccount GetAccountById(long id)
         {
             var account = context.UserAccounts
                 .Include(ua => ua.UserData)
@@ -27,7 +28,7 @@ namespace Bonsai.Persistence.Repositories
             return (account != null) ? EntityMapper.ToDomainModel(account) : null;
         }
 
-        public UserAccount CreateAccount(UserAccount account)
+        public BL.UserAccount CreateAccount(BL.UserAccount account)
         {
             // Validate data
 
@@ -37,6 +38,11 @@ namespace Bonsai.Persistence.Repositories
             dbAccount.PasswordHash = hash;
             dbAccount.PasswordSalt = salt;
 
+            if (dbAccount.UserData == null)
+            {
+                dbAccount.UserData = new DB.UserData();
+            }
+
             context.UserAccounts.Add(dbAccount);
             context.UsersData.Add(dbAccount.UserData);
 
@@ -45,7 +51,7 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
-        public UserAccount UpdatePassword(long id, string newPassword)
+        public BL.UserAccount UpdatePassword(long id, string newPassword)
         {
             // Validate data
 
@@ -72,7 +78,7 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
-        public UserAccount UpdateEmail(long id, string newEmail)
+        public BL.UserAccount UpdateEmail(long id, string newEmail)
         {
             // Validate data
 
@@ -92,7 +98,7 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
-        public UserAccount UpdateUserData(long accountId, UserData newUserData)
+        public BL.UserAccount UpdateUserData(long accountId, BL.UserData newUserData)
         {
             // Validate data
 
@@ -117,7 +123,7 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
-        public UserAccount DeleteAccount(long accountId)
+        public BL.UserAccount DeleteAccount(long accountId)
         {
             // Validate data
 

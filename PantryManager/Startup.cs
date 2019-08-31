@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
+using Bonsai.Helpers;
+using Bonsai.Persistence.Context;
+using Bonsai.Persistence.Helpers;
+using Bonsai.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
-using Bonsai.Persistence.Context;
-using System.Reflection;
-using Bonsai.Service;
+using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Bonsai
 {
@@ -31,17 +37,60 @@ namespace Bonsai
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<PantryDbContext>
-                (options => options.UseSqlServer(Configuration.GetConnectionString("PantryManagerDatabase")));
+                (options => options.UseSqlServer(
+                    Configuration.GetConnectionString("PantryManagerDatabase"), 
+                    b => b.MigrationsAssembly("Bonsai.Persistence"))
+                );
 
-            AddSingletonImplementations(services,
+
+
+
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true
+                };
+            });
+
+
+
+
+            AddScopedImplementations(services,
                 GetTypesInNamespace(
-                    typeof(PantryDbContext).Assembly, 
+                    typeof(PantryDbContext).Assembly,
                     "Bonsai.Persistence.Repositories"));
 
-            AddSingletonImplementations(services,
+            AddScopedImplementations(services,
                 GetTypesInNamespace(
                     typeof(IAccountService).Assembly,
                     "Bonsai.Service"));
+
+            services.AddSingleton(new PasswordHelper());
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,22 +101,40 @@ namespace Bonsai
                 app.UseDeveloperExceptionPage();
             }
 
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+
+            app.UseAuthentication();
+
             app.UseMvc();
         }
+
+
+        // =====================================================================================================================================
+
 
         private Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
             => assembly.GetTypes()
                 .Where(t => t.Namespace != null && t.IsPublic && t.IsClass && t.Namespace.StartsWith(nameSpace))
                 .ToArray();
 
-        private void AddSingletonImplementations(IServiceCollection services, Type[] types)
+        private void AddScopedImplementations(IServiceCollection services, Type[] types)
         {
             foreach (var repo in types)
             {
-                services.AddSingleton(repo);
+                services.AddScoped(repo);
                 foreach (var interf in repo.GetInterfaces())
                 {
-                    services.AddSingleton(interf, s => s.GetService(repo));
+                    services.AddScoped(interf, s => s.GetService(repo));
                 }
             }
         }

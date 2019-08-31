@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Database = Bonsai.Persistence.Model;
 
 namespace Bonsai.Persistence.Helpers
@@ -10,17 +7,27 @@ namespace Bonsai.Persistence.Helpers
     {
         public static Domain.UserAccount ToDomainModel(Database.UserAccount db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.UserAccount
             {
                 Id = db.Id,
                 Username = db.Username,
-                Email= db.Email,
+                Email = db.Email,
                 UserData = ToDomainModel(db.UserData)
             };
         }
 
         public static Database.UserAccount ToDatabaseModel(Domain.UserAccount d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.UserAccount
             {
                 Id = d.Id,
@@ -32,6 +39,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Domain.UserData ToDomainModel(Database.UserData db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.UserData
             {
                 Id = db.Id,
@@ -47,6 +59,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.UserData ToDatabaseModel(Domain.UserData d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.UserData
             {
                 Id = d.Id,
@@ -62,6 +79,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Domain.Pantry ToDomainModel(Database.Pantry db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.Pantry
             {
                 Id = db.Id,
@@ -71,6 +93,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.Pantry ToDatabaseModel(Domain.Pantry d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.Pantry
             {
                 Id = d.Id,
@@ -80,6 +107,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Domain.RecipeCatalog ToDomainModel(Database.RecipeCatalog db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.RecipeCatalog
             {
                 Id = db.Id,
@@ -89,6 +121,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.RecipeCatalog ToDatabaseModel(Domain.RecipeCatalog d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.RecipeCatalog
             {
                 Id = d.Id,
@@ -98,6 +135,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Domain.MealPlanHistory ToDomainModel(Database.MealPlanHistory db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.MealPlanHistory
             {
                 Id = db.Id,
@@ -107,6 +149,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.MealPlanHistory ToDatabaseModel(Domain.MealPlanHistory d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.MealPlanHistory
             {
                 Id = d.Id,
@@ -116,6 +163,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Domain.Item ToDomainModel(Database.Item db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.Item
             {
                 Id = db.Id,
@@ -128,6 +180,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.Item ToDatabaseModel(Domain.Item d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.Item
             {
                 Id = d.Id,
@@ -140,6 +197,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Domain.MealPlan ToDomainModel(Database.MealPlan db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.MealPlan
             {
                 Id = db.Id,
@@ -152,6 +214,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.MealPlan ToDatabaseModel(Domain.MealPlan d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.MealPlan
             {
                 Id = d.Id,
@@ -164,6 +231,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Domain.PlannedRecipe ToDomainModel(Database.PlannedRecipe db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.PlannedRecipe
             {
                 Id = db.Id,
@@ -175,17 +247,27 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.PlannedRecipe ToDatabaseModel(Domain.PlannedRecipe d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.PlannedRecipe
             {
                 Id = d.Id,
                 Recipe = ToDatabaseModel(d.Recipe),
                 PlannedDate = d.PlannedDate,
-                PlannedTime = d .PlannedTime
+                PlannedTime = d.PlannedTime
             };
         }
 
         public static Domain.Recipe ToDomainModel(Database.Recipe db)
         {
+            if (db == null)
+            {
+                return null;
+            }
+
             return new Domain.Recipe
             {
                 Id = db.Id,
@@ -196,6 +278,11 @@ namespace Bonsai.Persistence.Helpers
 
         public static Database.Recipe ToDatabaseModel(Domain.Recipe d)
         {
+            if (d == null)
+            {
+                return null;
+            }
+
             return new Database.Recipe
             {
                 Id = d.Id,

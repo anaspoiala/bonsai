@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bonsai.Domain;
+using Bonsai.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Bonsai.Domain;
 
 namespace Bonsai.Controllers
 {
@@ -13,9 +10,19 @@ namespace Bonsai.Controllers
     [Authorize]
     public class AccountController : ControllerBase
     {
-        public UserAccount Register([FromBody] UserAccount acccount)
+        private IAccountService service;
+
+        public AccountController(IAccountService service)
         {
-            throw new NotImplementedException();
+            this.service = service;
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public UserAccount Register([FromBody] UserAccount account)
+        {
+            return service.CreateAccount(account);
         }
 
 
