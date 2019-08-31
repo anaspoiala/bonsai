@@ -10,7 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
-using Bonsai.Persistence;
+using Bonsai.Persistence.Context;
+using System.Reflection;
+using Bonsai.Service;
 
 namespace Bonsai
 {
@@ -30,6 +32,16 @@ namespace Bonsai
 
             services.AddDbContext<PantryDbContext>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("PantryManagerDatabase")));
+
+            AddSingletonImplementations(services,
+                GetTypesInNamespace(
+                    typeof(PantryDbContext).Assembly, 
+                    "Bonsai.Persistence.Repositories"));
+
+            AddSingletonImplementations(services,
+                GetTypesInNamespace(
+                    typeof(IAccountService).Assembly,
+                    "Bonsai.Service"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +53,23 @@ namespace Bonsai
             }
 
             app.UseMvc();
+        }
+
+        private Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
+            => assembly.GetTypes()
+                .Where(t => t.Namespace != null && t.IsPublic && t.IsClass && t.Namespace.StartsWith(nameSpace))
+                .ToArray();
+
+        private void AddSingletonImplementations(IServiceCollection services, Type[] types)
+        {
+            foreach (var repo in types)
+            {
+                services.AddSingleton(repo);
+                foreach (var interf in repo.GetInterfaces())
+                {
+                    services.AddSingleton(interf, s => s.GetService(repo));
+                }
+            }
         }
     }
 }

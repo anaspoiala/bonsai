@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Bonsai.Domain.Enums;
 using Bonsai.Persistence.Model;
 
-namespace Bonsai.Persistence
+namespace Bonsai.Persistence.Context
 {
     public class PantryDbContext : DbContext
     {

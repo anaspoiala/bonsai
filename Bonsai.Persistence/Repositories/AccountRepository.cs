@@ -2,29 +2,20 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Bonsai.Domain;
-using Bonsai.Helpers;
+using Bonsai.Persistence.Helpers;
+using Bonsai.Persistence.Context;
 
-namespace Bonsai.Persistence
+namespace Bonsai.Persistence.Repositories
 {
-    public interface IAccountRepository
-    {
-        UserAccount CreateAccount(UserAccount account);
-        UserAccount DeleteAccount(long accountId);
-        UserAccount GetAccountById(long id);
-        UserAccount UpdateEmail(long id, string newEmail);
-        UserAccount UpdatePassword(long id, string newPassword);
-        UserAccount UpdateUserData(long accountId, UserData newUserData);
-    }
-
     public class AccountRepository : IAccountRepository
     {
         private PantryDbContext context;
-        private AuthenticationHelper authenticationHelper;
+        private PasswordHelper passwordHelper;
 
-        public AccountRepository(PantryDbContext context, AuthenticationHelper authenticationHelper)
+        public AccountRepository(PantryDbContext context, PasswordHelper passwordHelper)
         {
             this.context = context;
-            this.authenticationHelper = authenticationHelper;
+            this.passwordHelper = passwordHelper;
         }
 
         public UserAccount GetAccountById(long id)
@@ -42,7 +33,7 @@ namespace Bonsai.Persistence
 
             var dbAccount = EntityMapper.ToDatabaseModel(account);
 
-            authenticationHelper.CreatePasswordHashAndSalt(account.Password, out var hash, out var salt);
+            passwordHelper.CreatePasswordHashAndSalt(account.Password, out var hash, out var salt);
             dbAccount.PasswordHash = hash;
             dbAccount.PasswordSalt = salt;
 
@@ -61,15 +52,17 @@ namespace Bonsai.Persistence
             var dbAccount = context.UserAccounts.SingleOrDefault(ua => ua.Id == id);
 
             if (dbAccount == null)
+            {
                 throw new Exception("User account not found!");
+            }
 
             // todo validate
 
             if (!string.IsNullOrWhiteSpace(newPassword) &&
-                !authenticationHelper.VerifyPassword(newPassword, dbAccount.PasswordHash, dbAccount.PasswordSalt))
+                !passwordHelper.VerifyPassword(newPassword, dbAccount.PasswordHash, dbAccount.PasswordSalt))
             {
                 // Password has changed
-                authenticationHelper.CreatePasswordHashAndSalt(newPassword, out var hash, out var salt);
+                passwordHelper.CreatePasswordHashAndSalt(newPassword, out var hash, out var salt);
                 dbAccount.PasswordHash = hash;
                 dbAccount.PasswordSalt = salt;
             }
@@ -86,7 +79,9 @@ namespace Bonsai.Persistence
             var dbAccount = context.UserAccounts.SingleOrDefault(ua => ua.Id == id);
 
             if (dbAccount == null)
+            {
                 throw new Exception("User account not found!");
+            }
 
             // todo validate
 
@@ -106,7 +101,9 @@ namespace Bonsai.Persistence
                 .SingleOrDefault(ua => ua.Id == accountId);
 
             if (dbAccount == null || dbAccount.UserData == null)
+            {
                 throw new Exception("User account or data not found!");
+            }
 
             // todo validate
 
@@ -127,7 +124,9 @@ namespace Bonsai.Persistence
             var dbAccount = context.UserAccounts.SingleOrDefault(ua => ua.Id == accountId);
 
             if (dbAccount == null)
+            {
                 throw new Exception("User account not found!");
+            }
 
             context.UsersData.Remove(dbAccount.UserData);
             context.UserAccounts.Remove(dbAccount);

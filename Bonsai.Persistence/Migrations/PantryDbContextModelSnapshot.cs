@@ -3,17 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Bonsai.Persistence;
+using Bonsai.Persistence.Context;
 
 namespace Bonsai.Migrations
 {
     [DbContext(typeof(PantryDbContext))]
-    [Migration("20190822112037_UpdateRelations")]
-    partial class UpdateRelations
+    partial class PantryDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

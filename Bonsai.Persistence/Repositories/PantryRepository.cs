@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Model;
 
-namespace Bonsai.Persistence
+namespace Bonsai.Persistence.Repositories
 {
     public class PantryRepository
     {

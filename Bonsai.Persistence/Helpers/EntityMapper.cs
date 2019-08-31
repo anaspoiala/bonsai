@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Database = Bonsai.Persistence.Model;
-using Domain = Bonsai.Domain;
 
-namespace Bonsai.Persistence
+namespace Bonsai.Persistence.Helpers
 {
     public static class EntityMapper
     {

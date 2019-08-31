@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Bonsai.Persistence
+namespace Bonsai.Persistence.Repositories
 {
     public class MealPlanRepository
     {
