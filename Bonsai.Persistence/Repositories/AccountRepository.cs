@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
@@ -19,6 +20,7 @@ namespace Bonsai.Persistence.Repositories
             this.passwordHelper = passwordHelper;
         }
 
+
         public BL.UserAccount GetAccountById(long id)
         {
             var account = context.UserAccounts
@@ -28,90 +30,79 @@ namespace Bonsai.Persistence.Repositories
             return (account != null) ? EntityMapper.ToDomainModel(account) : null;
         }
 
+        public BL.UserAccount GetAccountByUsername(string username)
+        {
+            var account = context.UserAccounts
+                .Include(ua => ua.UserData)
+                .SingleOrDefault(ua => ua.Username == username);
+
+            return (account != null) ? EntityMapper.ToDomainModel(account) : null;
+        }
+
+        public bool CheckAccountPassword(long id, string password)
+        {
+            var account = context.UserAccounts.SingleOrDefault(ua => ua.Id == id);
+
+            if (account == null)
+                throw new Exception("Account not found!");
+
+            return passwordHelper.VerifyPassword(password, account.PasswordHash, account.PasswordSalt);
+        }
+
         public BL.UserAccount CreateAccount(BL.UserAccount account)
         {
-            // Validate data
+            var newAccount = EntityMapper.ToDatabaseModel(account);
+            var newUserData = new DB.UserData();
+            var newPantry = new DB.Pantry();
+            var newMealPlanCalendar = new DB.MealPlanHistory();
+            var newRecipeCatalog = new DB.RecipeCatalog();
 
-            var dbAccount = EntityMapper.ToDatabaseModel(account);
-
+            // Hash password
             passwordHelper.CreatePasswordHashAndSalt(account.Password, out var hash, out var salt);
-            dbAccount.PasswordHash = hash;
-            dbAccount.PasswordSalt = salt;
+            newAccount.PasswordHash = hash;
+            newAccount.PasswordSalt = salt;
+            
+            // Set user data fields
+            newUserData.FirstName = account.UserData?.FirstName ?? "";
+            newUserData.LastName = account.UserData?.LastName ?? "";
+            newUserData.DateOfBirth = account.UserData?.DateOfBirth ?? DateTime.UtcNow;
+            newUserData.Gender = account.UserData?.Gender ?? "";
 
-            if (dbAccount.UserData == null)
-            {
-                dbAccount.UserData = new DB.UserData();
-            }
+            // Create Pantry, MealPlanCalendar and RecipeCatalog
+            newPantry.Items = new List<DB.Item>();
+            newPantry.UserData = newUserData;
+            newMealPlanCalendar.MealPlans = new List<DB.MealPlan>();
+            newMealPlanCalendar.UserData = newUserData;
+            newRecipeCatalog.Recipes = new List<DB.Recipe>();
+            newRecipeCatalog.UserData = newUserData;
 
-            context.UserAccounts.Add(dbAccount);
-            context.UsersData.Add(dbAccount.UserData);
+            // Set account fields
+            newUserData.Pantry = newPantry;
+            newUserData.MealPlanHistory = newMealPlanCalendar;
+            newUserData.RecipeCatalog = newRecipeCatalog;
+            newAccount.UserData = newUserData;
 
+            // Add account to database
+            context.Pantries.Add(newPantry);
+            context.MealPlanHistories.Add(newMealPlanCalendar);
+            context.RecipeCatalogs.Add(newRecipeCatalog);
+            context.UsersData.Add(newUserData);
+            context.UserAccounts.Add(newAccount);
+
+            // Commit changes and return result
             context.SaveChanges();
-
-            return EntityMapper.ToDomainModel(dbAccount);
+            return EntityMapper.ToDomainModel(newAccount);
         }
 
-        public BL.UserAccount UpdatePassword(long id, string newPassword)
-        {
-            // Validate data
-
-            var dbAccount = context.UserAccounts.SingleOrDefault(ua => ua.Id == id);
-
-            if (dbAccount == null)
-            {
-                throw new Exception("User account not found!");
-            }
-
-            // todo validate
-
-            if (!string.IsNullOrWhiteSpace(newPassword) &&
-                !passwordHelper.VerifyPassword(newPassword, dbAccount.PasswordHash, dbAccount.PasswordSalt))
-            {
-                // Password has changed
-                passwordHelper.CreatePasswordHashAndSalt(newPassword, out var hash, out var salt);
-                dbAccount.PasswordHash = hash;
-                dbAccount.PasswordSalt = salt;
-            }
-
-            context.SaveChanges();
-
-            return EntityMapper.ToDomainModel(dbAccount);
-        }
-
-        public BL.UserAccount UpdateEmail(long id, string newEmail)
-        {
-            // Validate data
-
-            var dbAccount = context.UserAccounts.SingleOrDefault(ua => ua.Id == id);
-
-            if (dbAccount == null)
-            {
-                throw new Exception("User account not found!");
-            }
-
-            // todo validate
-
-            dbAccount.Email = newEmail;
-
-            context.SaveChanges();
-
-            return EntityMapper.ToDomainModel(dbAccount);
-        }
 
         public BL.UserAccount UpdateUserData(long accountId, BL.UserData newUserData)
         {
-            // Validate data
-
             var dbAccount = context.UserAccounts
                 .Include(ua => ua.UserData)
                 .SingleOrDefault(ua => ua.Id == accountId);
 
             if (dbAccount == null || dbAccount.UserData == null)
-            {
                 throw new Exception("User account or data not found!");
-            }
-
-            // todo validate
 
             dbAccount.UserData.FirstName = newUserData.FirstName;
             dbAccount.UserData.LastName = newUserData.LastName;
@@ -119,30 +110,24 @@ namespace Bonsai.Persistence.Repositories
             dbAccount.UserData.Gender = newUserData.Gender;
 
             context.SaveChanges();
-
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
         public BL.UserAccount DeleteAccount(long accountId)
         {
-            // Validate data
-
-            var dbAccount = context.UserAccounts.SingleOrDefault(ua => ua.Id == accountId);
+            var dbAccount = context.UserAccounts
+                .SingleOrDefault(ua => ua.Id == accountId);
 
             if (dbAccount == null)
-            {
                 throw new Exception("User account not found!");
-            }
 
-            context.UsersData.Remove(dbAccount.UserData);
             context.UserAccounts.Remove(dbAccount);
 
             context.SaveChanges();
-
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
 
-
+        
     }
 }

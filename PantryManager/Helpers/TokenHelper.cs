@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Bonsai.Domain;
 using Microsoft.IdentityModel.Tokens;
 
-namespace PantryManager.Helpers
+namespace Bonsai.Helpers
 {
     public class TokenHelper
     {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Bonsai.Domain;
+﻿using Bonsai.Domain;
 
 namespace Bonsai.Persistence
 {
@@ -10,8 +7,8 @@ namespace Bonsai.Persistence
         UserAccount CreateAccount(UserAccount account);
         UserAccount DeleteAccount(long accountId);
         UserAccount GetAccountById(long id);
-        UserAccount UpdateEmail(long id, string newEmail);
-        UserAccount UpdatePassword(long id, string newPassword);
+        UserAccount GetAccountByUsername(string username);
+        bool CheckAccountPassword(long id, string password);
         UserAccount UpdateUserData(long accountId, UserData newUserData);
     }
 }

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Bonsai.Helpers;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
@@ -15,8 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -34,14 +30,16 @@ namespace Bonsai
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Add Database Context
 
             services.AddDbContext<PantryDbContext>
                 (options => options.UseSqlServer(
-                    Configuration.GetConnectionString("PantryManagerDatabase"), 
+                    Configuration.GetConnectionString("PantryManagerDatabase"),
                     b => b.MigrationsAssembly("Bonsai.Persistence"))
                 );
-
 
 
 
@@ -72,7 +70,10 @@ namespace Bonsai
             });
 
 
+            // Add services
 
+            services.AddSingleton(new PasswordHelper());
+            services.AddSingleton(new TokenHelper(appSettings.Secret));
 
             AddScopedImplementations(services,
                 GetTypesInNamespace(
@@ -84,7 +85,6 @@ namespace Bonsai
                     typeof(IAccountService).Assembly,
                     "Bonsai.Service"));
 
-            services.AddSingleton(new PasswordHelper());
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -114,6 +114,14 @@ namespace Bonsai
 
 
             app.UseAuthentication();
+
+            //app.Use(async (context, next) =>
+            //{
+            //    var user = context.RequestServices.GetService<UserAccount>();
+            //    //context.User.Claims
+            //    user.Id = 14;
+            //    user.Email = "injected@test.com";
+            //});
 
             app.UseMvc();
         }
