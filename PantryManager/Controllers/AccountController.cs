@@ -82,5 +82,27 @@ namespace Bonsai.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpPut("{accountId:int}/updateUserData")]
+        public IActionResult UpdateUserData([FromRoute] int accountId, [FromBody] UserDataUpdateModel userData)
+        {
+            try
+            {
+                var updatedAccount = service.UpdateAccountData(accountId, new UserData
+                {
+                    FirstName = userData.FirstName,
+                    LastName = userData.LastName,
+                    DateOfBirth = userData.DateOfBirth,
+                    Gender = userData.Gender
+                }) ;
+
+                return Ok(updatedAccount);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ExceptionMessage = ex.Message });
+            }
+        }
+
     }
 }
