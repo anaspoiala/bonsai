@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonsai.WebAPI", "PantryManager\Bonsai.WebAPI.csproj", "{8AA9D1E5-9079-47AF-893D-13F655C8D8FC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Bonsai", "PantryManagerTest\Test.Bonsai.csproj", "{74CBAEF0-1619-4311-9242-701A1D2D5633}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bonsai", "Bonsai\Bonsai.csproj", "{5F1954F8-77D1-4755-B82C-E9B07043B8B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonsai", "Bonsai\Bonsai.csproj", "{5F1954F8-77D1-4755-B82C-E9B07043B8B8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{84EB110C-FA5F-4B4D-A4CC-6F6BE99FBA81}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,7 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bonsai.Persistence", "Bonsai.Persistence\Bonsai.Persistence.csproj", "{CCFC9117-5C0B-4E7E-A0C1-41E3DD0514B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonsai.Persistence", "Bonsai.Persistence\Bonsai.Persistence.csproj", "{CCFC9117-5C0B-4E7E-A0C1-41E3DD0514B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Bonsai", "Test.Bonsai\Test.Bonsai.csproj", "{ABFA7123-BD58-4654-B451-EBF830C7DF8C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonsai.WebAPI", "Bonsai.WebAPI\Bonsai.WebAPI.csproj", "{B0F86CC4-9436-48C0-B25B-BB82C8F3D450}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8AA9D1E5-9079-47AF-893D-13F655C8D8FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AA9D1E5-9079-47AF-893D-13F655C8D8FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AA9D1E5-9079-47AF-893D-13F655C8D8FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AA9D1E5-9079-47AF-893D-13F655C8D8FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74CBAEF0-1619-4311-9242-701A1D2D5633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74CBAEF0-1619-4311-9242-701A1D2D5633}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74CBAEF0-1619-4311-9242-701A1D2D5633}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74CBAEF0-1619-4311-9242-701A1D2D5633}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F1954F8-77D1-4755-B82C-E9B07043B8B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F1954F8-77D1-4755-B82C-E9B07043B8B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F1954F8-77D1-4755-B82C-E9B07043B8B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +31,14 @@ Global
 		{CCFC9117-5C0B-4E7E-A0C1-41E3DD0514B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCFC9117-5C0B-4E7E-A0C1-41E3DD0514B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCFC9117-5C0B-4E7E-A0C1-41E3DD0514B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABFA7123-BD58-4654-B451-EBF830C7DF8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABFA7123-BD58-4654-B451-EBF830C7DF8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABFA7123-BD58-4654-B451-EBF830C7DF8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABFA7123-BD58-4654-B451-EBF830C7DF8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0F86CC4-9436-48C0-B25B-BB82C8F3D450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0F86CC4-9436-48C0-B25B-BB82C8F3D450}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0F86CC4-9436-48C0-B25B-BB82C8F3D450}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0F86CC4-9436-48C0-B25B-BB82C8F3D450}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
