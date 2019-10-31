@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Bonsai.Persistence.Context;
-using Bonsai.Persistence.Model;
+using Bonsai.Persistence.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bonsai.Persistence.Repositories
 {
-    public class PantryRepository
+    public class PantryRepository : IPantryRepository
     {
         private PantryDbContext context;
 
@@ -16,44 +15,45 @@ namespace Bonsai.Persistence.Repositories
             this.context = context;
         }
 
-        public IEnumerable<Pantry> GetAll()
+
+        public Domain.Pantry GetPantryByAccountId(long accountId)
         {
-            return context.Pantries.ToList();
+            return EntityMapper.ToDomainModel(context.Pantries
+                .Include(p => p.UserData)
+                    .ThenInclude(ud => ud.Account)
+                .Include(p => p.Items)
+                .SingleOrDefault(p => p.UserData.Account.Id == accountId));
         }
 
-        public Pantry GetById(long id)
+        public Domain.Item AddItem(long pantryId, Domain.Item item)
         {
-            return context.Pantries.SingleOrDefault(p => p.Id == id);
-        }
+            var dbItem = EntityMapper.ToDatabaseModel(item);
+            var pantry = context.Pantries
+                .Include(p => p.Items)
+                .SingleOrDefault(p => p.Id == pantryId);
 
-        public Pantry Create(Pantry pantry, long accountDataId)
-        {
-            var userData = context.UsersData.SingleOrDefault(ud => ud.Id == accountDataId);
-
-            if (userData == null)
-                throw new Exception("User data could not be found!");
-
-            if (userData.Pantry != null)
-                throw new Exception("A pantry for this user has already been created!");
-
-            pantry.UserData = userData;
-            context.Pantries.Add(pantry);
-            userData.Pantry = pantry;
-            context.SaveChanges();
-
-            return pantry;
-        }
-
-        public Pantry Delete(long id)
-        {
-            var pantry = context.Pantries.SingleOrDefault(p => p.Id == id);
             if (pantry == null)
-                throw new Exception("A pantry with the given ID does not exist!");
+            {
+                throw new Exception("Pantry does not exist");
+            }
 
-            context.Pantries.Remove(pantry);
+            pantry.Items.Add(dbItem);
+            context.Items.Add(dbItem);
+
             context.SaveChanges();
 
-            return pantry;
+            return EntityMapper.ToDomainModel(dbItem);
+        }
+
+        public Domain.Item DeleteItem(long pantryId, long id)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Domain.Item UpdateItem(long pantryId, long id, Domain.Item item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Bonsai.Persistence.Context
         public DbSet<UserAccount> UserAccounts { get; set; }
         public DbSet<UserData> UsersData { get; set; }
         public DbSet<Pantry> Pantries { get; set; }
-        public DbSet<MealPlanHistory> MealPlanHistories { get; set; }
+        public DbSet<MealPlanCalendar> MealPlanCalendars { get; set; }
         public DbSet<RecipeCatalog> RecipeCatalogs { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
@@ -47,9 +47,9 @@ namespace Bonsai.Persistence.Context
                 .HasForeignKey<RecipeCatalog>(rc => rc.UserDataId);
 
             model.Entity<UserData>()
-                .HasOne(d => d.MealPlanHistory)
+                .HasOne(d => d.MealPlanCalendar)
                 .WithOne(mph => mph.UserData)
-                .HasForeignKey<MealPlanHistory>(mph => mph.UserDataId);
+                .HasForeignKey<MealPlanCalendar>(mph => mph.UserDataId);
 
 
             // One-To-Many Relations

@@ -4,7 +4,6 @@ using System.Linq;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
 using Microsoft.EntityFrameworkCore;
-using BL = Bonsai.Domain;
 using DB = Bonsai.Persistence.Model;
 
 namespace Bonsai.Persistence.Repositories
@@ -21,7 +20,7 @@ namespace Bonsai.Persistence.Repositories
         }
 
 
-        public BL.UserAccount GetAccountById(long id)
+        public Domain.UserAccount GetAccountById(long id)
         {
             var account = context.UserAccounts
                 .Include(ua => ua.UserData)
@@ -30,7 +29,7 @@ namespace Bonsai.Persistence.Repositories
             return (account != null) ? EntityMapper.ToDomainModel(account) : null;
         }
 
-        public BL.UserAccount GetAccountByUsername(string username)
+        public Domain.UserAccount GetAccountByUsername(string username)
         {
             var account = context.UserAccounts
                 .Include(ua => ua.UserData)
@@ -44,24 +43,26 @@ namespace Bonsai.Persistence.Repositories
             var account = context.UserAccounts.SingleOrDefault(ua => ua.Id == id);
 
             if (account == null)
+            {
                 throw new Exception("Account not found!");
+            }
 
             return passwordHelper.VerifyPassword(password, account.PasswordHash, account.PasswordSalt);
         }
 
-        public BL.UserAccount CreateAccount(BL.UserAccount account)
+        public Domain.UserAccount CreateAccount(Domain.UserAccount account)
         {
             var newAccount = EntityMapper.ToDatabaseModel(account);
             var newUserData = new DB.UserData();
             var newPantry = new DB.Pantry();
-            var newMealPlanCalendar = new DB.MealPlanHistory();
+            var newMealPlanCalendar = new DB.MealPlanCalendar();
             var newRecipeCatalog = new DB.RecipeCatalog();
 
             // Hash password
             passwordHelper.CreatePasswordHashAndSalt(account.Password, out var hash, out var salt);
             newAccount.PasswordHash = hash;
             newAccount.PasswordSalt = salt;
-            
+
             // Set user data fields
             newUserData.FirstName = account.UserData?.FirstName ?? "";
             newUserData.LastName = account.UserData?.LastName ?? "";
@@ -78,13 +79,13 @@ namespace Bonsai.Persistence.Repositories
 
             // Set account fields
             newUserData.Pantry = newPantry;
-            newUserData.MealPlanHistory = newMealPlanCalendar;
+            newUserData.MealPlanCalendar = newMealPlanCalendar;
             newUserData.RecipeCatalog = newRecipeCatalog;
             newAccount.UserData = newUserData;
 
             // Add account to database
             context.Pantries.Add(newPantry);
-            context.MealPlanHistories.Add(newMealPlanCalendar);
+            context.MealPlanCalendars.Add(newMealPlanCalendar);
             context.RecipeCatalogs.Add(newRecipeCatalog);
             context.UsersData.Add(newUserData);
             context.UserAccounts.Add(newAccount);
@@ -95,14 +96,16 @@ namespace Bonsai.Persistence.Repositories
         }
 
 
-        public BL.UserAccount UpdateUserData(long accountId, BL.UserData newUserData)
+        public Domain.UserAccount UpdateUserData(long accountId, Domain.UserData newUserData)
         {
             var dbAccount = context.UserAccounts
                 .Include(ua => ua.UserData)
                 .SingleOrDefault(ua => ua.Id == accountId);
 
             if (dbAccount == null || dbAccount.UserData == null)
+            {
                 throw new Exception("User account or data not found!");
+            }
 
             dbAccount.UserData.FirstName = newUserData.FirstName;
             dbAccount.UserData.LastName = newUserData.LastName;
@@ -113,13 +116,15 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
-        public BL.UserAccount DeleteAccount(long accountId)
+        public Domain.UserAccount DeleteAccount(long accountId)
         {
             var dbAccount = context.UserAccounts
                 .SingleOrDefault(ua => ua.Id == accountId);
 
             if (dbAccount == null)
+            {
                 throw new Exception("User account not found!");
+            }
 
             context.UserAccounts.Remove(dbAccount);
 
@@ -127,7 +132,5 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbAccount);
         }
 
-
-        
     }
 }

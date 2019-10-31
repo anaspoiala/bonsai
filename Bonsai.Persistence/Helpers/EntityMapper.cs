@@ -53,7 +53,7 @@ namespace Bonsai.Persistence.Helpers
                 Gender = db.Gender,
                 Pantry = ToDomainModel(db.Pantry),
                 RecipeCatalog = ToDomainModel(db.RecipeCatalog),
-                MealPlanHistory = ToDomainModel(db.MealPlanHistory)
+                MealPlanCalendar = ToDomainModel(db.MealPlanCalendar)
             };
         }
 
@@ -73,7 +73,7 @@ namespace Bonsai.Persistence.Helpers
                 Gender = d.Gender,
                 Pantry = ToDatabaseModel(d.Pantry),
                 RecipeCatalog = ToDatabaseModel(d.RecipeCatalog),
-                MealPlanHistory = ToDatabaseModel(d.MealPlanHistory)
+                MealPlanCalendar = ToDatabaseModel(d.MealPlanCalendar)
             };
         }
 
@@ -133,28 +133,28 @@ namespace Bonsai.Persistence.Helpers
             };
         }
 
-        public static Domain.MealPlanHistory ToDomainModel(Database.MealPlanHistory db)
+        public static Domain.MealPlanCalendar ToDomainModel(Database.MealPlanCalendar db)
         {
             if (db == null)
             {
                 return null;
             }
 
-            return new Domain.MealPlanHistory
+            return new Domain.MealPlanCalendar
             {
                 Id = db.Id,
                 MealPlans = db.MealPlans.Select(mp => ToDomainModel(mp)).ToList()
             };
         }
 
-        public static Database.MealPlanHistory ToDatabaseModel(Domain.MealPlanHistory d)
+        public static Database.MealPlanCalendar ToDatabaseModel(Domain.MealPlanCalendar d)
         {
             if (d == null)
             {
                 return null;
             }
 
-            return new Database.MealPlanHistory
+            return new Database.MealPlanCalendar
             {
                 Id = d.Id,
                 MealPlans = d.MealPlans.Select(mp => ToDatabaseModel(mp)).ToList()

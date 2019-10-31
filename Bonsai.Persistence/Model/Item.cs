@@ -11,8 +11,8 @@ namespace Bonsai.Persistence.Model
         public long Id { get; set; }
         public string Name { get; set; }
         public Domain.Quantity Quantity { get; set; }
-        public DateTime BuyDate { get; set; }
-        public DateTime ExpirationDate { get; set; }
+        public DateTime? BuyDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
         public List<RecipeItem> RecipesUsingThisItem { get; set; }
         //public long PantryId { get; set; }

@@ -4,14 +4,16 @@ using Bonsai.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bonsai.Migrations
 {
     [DbContext(typeof(PantryDbContext))]
-    partial class PantryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190904130032_RenameMealPlanCalendarAndMadeItemFieldsNullable")]
+    partial class RenameMealPlanCalendarAndMadeItemFieldsNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +76,7 @@ namespace Bonsai.Migrations
                     b.HasIndex("UserDataId")
                         .IsUnique();
 
-                    b.ToTable("MealPlanCalendars");
+                    b.ToTable("MealPlanHistories");
                 });
 
             modelBuilder.Entity("Bonsai.Persistence.Model.Pantry", b =>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bonsai.Persistence.Model
 {
-    public class MealPlanHistory
+    public class MealPlanCalendar
     {
         [Key]
         public long Id { get; set; }

@@ -16,7 +16,7 @@ namespace Bonsai.Persistence.Model
 
         public Pantry Pantry { get; set; }
         public RecipeCatalog RecipeCatalog { get; set; }
-        public MealPlanHistory MealPlanHistory { get; set; }
+        public MealPlanCalendar MealPlanCalendar { get; set; }
 
         public long AccountId { get; set; }
         public UserAccount Account { get; set; }
