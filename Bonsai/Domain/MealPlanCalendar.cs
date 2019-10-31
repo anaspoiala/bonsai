@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Bonsai.Domain
 {
-    public class MealPlanHistory
+    public class MealPlanCalendar
     {
         public long Id { get; set; }
         public List<MealPlan> MealPlans { get; set; }
