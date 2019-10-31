@@ -6,6 +6,8 @@ using Bonsai.Helpers;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
 using Bonsai.Service;
+using Bonsai.WebAPI.Helpers;
+using Bonsai.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,32 +36,29 @@ namespace Bonsai
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Add Database Context
-
             services.AddDbContext<PantryDbContext>
                 (options => options.UseSqlServer(
                     Configuration.GetConnectionString("PantryManagerDatabase"),
-                    b => b.MigrationsAssembly("Bonsai.Persistence"))
+                    sqlServerOptions => sqlServerOptions.MigrationsAssembly("Bonsai.Persistence"))
                 );
 
-
-
-            // configure strongly typed settings objects
+            // Configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
-            // configure jwt authentication
+            // Configure JWT authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            services.AddAuthentication(x =>
+            services.AddAuthentication(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
+            .AddJwtBearer(options =>
             {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -69,22 +68,17 @@ namespace Bonsai
                 };
             });
 
-
             // Add services
-
             services.AddSingleton(new PasswordHelper());
             services.AddSingleton(new TokenHelper(appSettings.Secret));
 
-            AddScopedImplementations(services,
-                GetTypesInNamespace(
-                    typeof(PantryDbContext).Assembly,
-                    "Bonsai.Persistence.Repositories"));
+            services.AddScoped<UserInformation>();
 
-            AddScopedImplementations(services,
-                GetTypesInNamespace(
-                    typeof(IAccountService).Assembly,
-                    "Bonsai.Service"));
+            AddScopedImplementations(services, GetTypesInNamespace(
+                    typeof(PantryDbContext).Assembly, "Bonsai.Persistence.Repositories"));
 
+            AddScopedImplementations(services, GetTypesInNamespace(
+                    typeof(IAccountService).Assembly, "Bonsai.Service"));
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -101,12 +95,9 @@ namespace Bonsai
                 app.UseDeveloperExceptionPage();
             }
 
-
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
@@ -122,6 +113,8 @@ namespace Bonsai
             //    user.Id = 14;
             //    user.Email = "injected@test.com";
             //});
+
+            app.UseMiddleware<RequestUserIdMiddleware>();
 
             app.UseMvc();
         }

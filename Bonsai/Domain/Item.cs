@@ -10,8 +10,8 @@ namespace Bonsai.Domain
         public long Id { get; set; }
         public string Name { get; set; }
         public Quantity Quantity { get; set; }
-        public DateTime BuyDate { get; set; }
-        public DateTime ExpirationDate { get; set; }
+        public DateTime? BuyDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
     }
 }

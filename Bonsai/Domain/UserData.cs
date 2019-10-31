@@ -14,6 +14,6 @@ namespace Bonsai.Domain
         public string Gender { get; set; }
         public Pantry Pantry { get; set; }
         public RecipeCatalog RecipeCatalog { get; set; }
-        public MealPlanHistory MealPlanHistory { get; set; }
+        public MealPlanCalendar MealPlanCalendar { get; set; }
     }
 }

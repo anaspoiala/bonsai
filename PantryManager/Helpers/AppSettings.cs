@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Bonsai.Helpers
+namespace Bonsai.WebAPI.Helpers
 {
     public class AppSettings
     {

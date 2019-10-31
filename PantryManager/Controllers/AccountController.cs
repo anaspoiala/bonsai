@@ -1,8 +1,8 @@
 ﻿using System;
 using Bonsai.Domain;
-using Bonsai.Helpers;
 using Bonsai.Service;
 using Bonsai.WebAPI.ApiModel;
+using Bonsai.WebAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

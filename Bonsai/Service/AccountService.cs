@@ -18,50 +18,46 @@ namespace Bonsai.Service
 
     public class AccountService : IAccountService
     {
-        private IAccountRepository accountRepository;
+        private IAccountRepository repository;
 
 
-        public AccountService(IAccountRepository accountRepository)
+        public AccountService(IAccountRepository repository)
         {
-            this.accountRepository = accountRepository;
+            this.repository = repository;
         }
 
 
         public UserAccount GetAccountById(long accountId)
         {
-            return accountRepository.GetAccountById(accountId);
+            return repository.GetAccountById(accountId);
         }
 
         public UserAccount GetAccountByUsername(string username)
         {
-            return accountRepository.GetAccountByUsername(username);
+            return repository.GetAccountByUsername(username);
         }
 
         public UserAccount CreateAccount(UserAccount account)
         {
             ValidateAcount(account);
 
-            return accountRepository.CreateAccount(account);
+            return repository.CreateAccount(account);
         }
-
 
         public UserAccount DeleteAccount(long accountId)
         {
-            return accountRepository.DeleteAccount(accountId);
+            return repository.DeleteAccount(accountId);
         }
-
 
         public UserAccount UpdateAccountData(long accountId, UserData data)
         {
-            return accountRepository.UpdateUserData(accountId, data);
+            return repository.UpdateUserData(accountId, data);
         }
 
         public bool CheckPassword(long accountId, string password)
         {
-            return accountRepository.CheckAccountPassword(accountId, password);
+            return repository.CheckAccountPassword(accountId, password);
         }
-
-
 
         private void ValidateAcount(UserAccount account)
         {
@@ -72,38 +68,62 @@ namespace Bonsai.Service
 
         private void ValidateUsername(string username)
         {
-            if (accountRepository.GetAccountByUsername(username) != null)               // Username already exists in the database.
-            {
+            if (repository.GetAccountByUsername(username) != null)
+            { // Username already exists in the database.
                 throw new Exception("Username already exists!");
             }
 
-            if (AccountValidator.IsNullEmptyOrWhiteSpace(username) ||                   // Username empty or not provided.
-                !AccountValidator.ContainsBetweenXAndYCharacters(username, 8, 32) ||    // Username doesn't contain between 8 and 32 characters.
-                !AccountValidator.ContainsLetters(username))                            // Username doesn't contain any letters (only numbers or symbols).
-            {
-                throw new Exception("Username invalid!");
+            if (TextValidator.IsNullEmptyOrWhiteSpace(username))
+            { // Username empty or not provided.
+                throw new Exception("Username can't be empty!");
             }
+
+            if (!TextValidator.ContainsBetweenXAndYCharacters(username, 8, 32))
+            { // Username doesn't contain between 8 and 32 characters.
+                throw new Exception("Username must contain between 8 and 32 characters!");
+            }
+
+            if (!TextValidator.ContainsLetters(username))
+            {  // Username doesn't contain any letters (only numbers or symbols).
+                throw new Exception("Username must contain at least one letter!");
+            }
+
+
         }
 
         private void ValidatePassword(string password)
         {
-            if (AccountValidator.IsNullEmptyOrWhiteSpace(password) ||                   // Pasword empty or not provided.
-                !AccountValidator.ContainsLowerLetters(password) ||                     // Password must contain between 12-32 character, lower and upper
-                !AccountValidator.ContainsUpperLetters(password) ||                     // letters, numbers and symbols.
-                !AccountValidator.ContainsNumbers(password) ||
-                !AccountValidator.ContainsSymbols(password) ||
-                !AccountValidator.ContainsBetweenXAndYCharacters(password, 12, 32))
-            {
-                throw new Exception("Invalid password!");
+            if (TextValidator.IsNullEmptyOrWhiteSpace(password))
+            { // Password empty or not provided.
+                throw new Exception("Password can't be empty!");
+            }
+
+            if (!TextValidator.ContainsLowerLetters(password) || !TextValidator.ContainsUpperLetters(password))
+            { // Password doesn't contain both uppercase and lowercase letters.
+                throw new Exception("Password must contain both uppercase and lowecase letters!");
+            }
+
+            if (!TextValidator.ContainsNumbers(password) && !TextValidator.ContainsSymbols(password))
+            { // Pasword doesn't contain neither numbers nor symbols.
+                throw new Exception("Password must contain at least one number or symbol!");
+            }
+
+            if (!TextValidator.ContainsBetweenXAndYCharacters(password, 8, 32))
+            { // Password doesn't have between 8 and 32 characters length.
+                throw new Exception("Password must contain between 8 and 32 characters!");
             }
         }
 
         private void ValidateEmail(string email)
         {
-            if (AccountValidator.IsNullEmptyOrWhiteSpace(email) ||                      // Email empty or not provided.
-                !AccountValidator.HasEmailFormat(email))                                // Email must have the "something@email.anything" format.
-            {
-                throw new Exception("Invalid email!");
+            if (TextValidator.IsNullEmptyOrWhiteSpace(email))
+            { // Email empty or not provided.
+                throw new Exception("Email can't be empty!");
+            }
+
+            if (!TextValidator.HasEmailFormat(email))
+            {  // Email must have the "something@email.anything" format.
+                throw new Exception("Email doesn't have a correct format (something@email.something)!");
             }
         }
     }
