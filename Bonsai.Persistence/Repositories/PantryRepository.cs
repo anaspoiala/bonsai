@@ -1,43 +1,44 @@
 ﻿using System;
 using System.Linq;
+using Bonsai.Helpers;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
+using DB = Bonsai.Persistence.Model;
 using Microsoft.EntityFrameworkCore;
+using Bonsai.Domain;
 
 namespace Bonsai.Persistence.Repositories
 {
     public class PantryRepository : IPantryRepository
     {
         private PantryDbContext context;
+        private UserInformation userInformation;
 
-        public PantryRepository(PantryDbContext context)
+        public PantryRepository(PantryDbContext context, UserInformation userInformation)
         {
             this.context = context;
+            this.userInformation = userInformation;
         }
 
 
-        public Domain.Pantry GetPantryByAccountId(long accountId)
+        public Domain.Pantry GetPantryOfCurrentAccount()
         {
             return EntityMapper.ToDomainModel(context.Pantries
-                .Include(p => p.UserData)
-                    .ThenInclude(ud => ud.Account)
                 .Include(p => p.Items)
-                .SingleOrDefault(p => p.UserData.Account.Id == accountId));
+                .SingleOrDefault(p => p.UserData.Account.Id == userInformation.CurrentUserId));
         }
 
-        public Domain.Item AddItem(long pantryId, Domain.Item item)
+        public Domain.Item AddItem(Domain.Item item)
         {
             var dbItem = EntityMapper.ToDatabaseModel(item);
-            var pantry = context.Pantries
-                .Include(p => p.Items)
-                .SingleOrDefault(p => p.Id == pantryId);
+            var dbPantry = GetDbPantryOfCurrentAccount();
 
-            if (pantry == null)
+            if (dbPantry == null)
             {
                 throw new Exception("Pantry does not exist");
             }
 
-            pantry.Items.Add(dbItem);
+            dbPantry.Items.Add(dbItem);
             context.Items.Add(dbItem);
 
             context.SaveChanges();
@@ -45,16 +46,24 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbItem);
         }
 
-        public Domain.Item DeleteItem(long pantryId, long id)
+        public Item DeleteItem(long itemId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Item UpdateItem(long itemId, Item item)
         {
             throw new NotImplementedException();
         }
 
 
-        public Domain.Item UpdateItem(long pantryId, long id, Domain.Item item)
+        private DB.Pantry GetDbPantryOfCurrentAccount()
         {
-            throw new NotImplementedException();
+            return context.Pantries
+                .Include(p => p.Items)
+                .SingleOrDefault(p => p.UserData.Account.Id == userInformation.CurrentUserId);
         }
+
     }
 }
 

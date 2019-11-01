@@ -16,14 +16,15 @@ namespace Bonsai.WebAPI.Middlewares
 
         public async Task InvokeAsync(HttpContext context, UserInformation userInfo)
         {
-            if (context.User.FindFirst(ClaimTypes.Name) != null)
+            Claim userIdClaim = context.User.FindFirst(ClaimTypes.Name);
+            if (userIdClaim != null)
             {
-                int userId = int.Parse(context.User.FindFirst(ClaimTypes.Name).Value);
-                userInfo.CurrentUserId = userId;
+                int userId = int.Parse(userIdClaim.Value); 
+                userInfo.CurrentUserIdNullable = userId;
             }
             else
             {
-                userInfo.CurrentUserId = -1;
+                userInfo.CurrentUserIdNullable = null;
             }
 
             await next(context);

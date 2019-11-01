@@ -35,12 +35,12 @@ namespace Bonsai.Service
                 throw new Exception("Item quantity cannot be empty!");
             }
 
-            return repository.AddItem(userInformation.CurrentUserId, item);
+            return repository.AddItem(item);
         }
 
         public Pantry GetCurrentUserPantry()
         {
-            return repository.GetPantryByAccountId(userInformation.CurrentUserId);
+            return repository.GetPantryOfCurrentAccount();
         }
     }
 }

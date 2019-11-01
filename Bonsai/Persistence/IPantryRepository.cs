@@ -7,9 +7,9 @@ namespace Bonsai.Persistence
 {
     public interface IPantryRepository
     {
-        Pantry GetPantryByAccountId(long accountId);
-        Item AddItem(long pantryId, Item item);
-        Item DeleteItem(long pantryId, long id);
-        Item UpdateItem(long pantryId, long id, Item item);
+        Pantry GetPantryOfCurrentAccount();
+        Item AddItem(Item item);
+        Item DeleteItem(long itemId);
+        Item UpdateItem(long itemId, Item item);
     }
 }

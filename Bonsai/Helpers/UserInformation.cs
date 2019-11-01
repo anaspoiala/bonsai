@@ -7,11 +7,12 @@ namespace Bonsai.Helpers
 {
     public class UserInformation
     {
-        public int CurrentUserId { get; set; }
+        public int? CurrentUserIdNullable { private get; set; } = null;
 
-        public UserInformation()
-        {
-            CurrentUserId = -1;
-        }
+        public bool IsLoggedIn => CurrentUserIdNullable.HasValue;
+
+        public int CurrentUserId => CurrentUserIdNullable == null
+            ? throw new InvalidOperationException("User is not logged in")
+            : CurrentUserIdNullable.Value;
     }
 }
