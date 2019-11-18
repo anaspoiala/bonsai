@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Bonsai.Domain;
 using Bonsai.Helpers;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
-using DB = Bonsai.Persistence.Model;
 using Microsoft.EntityFrameworkCore;
-using Bonsai.Domain;
+using DB = Bonsai.Persistence.Model;
 
 namespace Bonsai.Persistence.Repositories
 {
@@ -26,6 +26,18 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(context.Pantries
                 .Include(p => p.Items)
                 .SingleOrDefault(p => p.UserData.Account.Id == userInformation.CurrentUserId));
+        }
+
+        public Item GetItem(long itemId)
+        {
+            var dbPantry = GetDbPantryOfCurrentAccount();
+            var item = dbPantry.Items.SingleOrDefault(i => i.Id == itemId);
+            if (item == null)
+            {
+                throw new Exception("Item does not exist");
+            }
+
+            return EntityMapper.ToDomainModel(item);
         }
 
         public Domain.Item AddItem(Domain.Item item)

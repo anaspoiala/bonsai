@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Bonsai
@@ -81,9 +82,19 @@ namespace Bonsai
                     typeof(IAccountService).Assembly, "Bonsai.Service"));
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                options.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+
+                // Add authorization header into the UI
+                options.AddSecurityDefinition("oauth2", new ApiKeyScheme
+                {
+                    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                    In = "header",
+                    Name = "Authorization",
+                    Type = "apiKey"
+                });
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
         }
 

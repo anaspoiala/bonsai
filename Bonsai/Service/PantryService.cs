@@ -9,6 +9,7 @@ namespace Bonsai.Service
     public interface IPantryService
     {
         Pantry GetCurrentUserPantry();
+        Item GetItem(int itemId);
         Item AddItem(Item item);
     }
 
@@ -21,6 +22,16 @@ namespace Bonsai.Service
         {
             this.repository = repository;
             this.userInformation = userInformation;
+        }
+        
+        public Pantry GetCurrentUserPantry()
+        {
+            return repository.GetPantryOfCurrentAccount();
+        }
+
+        public Item GetItem(int itemId)
+        {
+            return repository.GetItem(itemId);
         }
 
         public Item AddItem(Item item)
@@ -38,9 +49,5 @@ namespace Bonsai.Service
             return repository.AddItem(item);
         }
 
-        public Pantry GetCurrentUserPantry()
-        {
-            return repository.GetPantryOfCurrentAccount();
-        }
     }
 }
