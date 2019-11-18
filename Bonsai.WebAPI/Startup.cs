@@ -114,18 +114,10 @@ namespace Bonsai
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-
             app.UseAuthentication();
 
-            //app.Use(async (context, next) =>
-            //{
-            //    var user = context.RequestServices.GetService<UserAccount>();
-            //    //context.User.Claims
-            //    user.Id = 14;
-            //    user.Email = "injected@test.com";
-            //});
-
             app.UseMiddleware<RequestUserIdMiddleware>();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseMvc();
         }
