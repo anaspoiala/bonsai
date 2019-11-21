@@ -62,6 +62,37 @@ namespace Bonsai.WebAPI.Controllers
 
         }
 
+        //[HttpPut("{itemId:int}")]
+        //public IActionResult UpdateItem([FromRoute] int itemId, [FromBody] ItemUpdateModel item)
+        //{
+        //    if (!userInformation.IsLoggedIn)
+        //        return BadRequest("Not logged in!");
+
+        //var newItem = new Domain.Item
+        //{
+        //    Name = item.Name,
+        //    Quantity = new Domain.Quantity
+        //    {
+        //        Amount = item.Amount.HasValue? item.Amount.Value : null,
+        //        Unit = Enum.TryParse(Domain.Enums.MeasurementUnit, )
+        //    }
+        //    BuyDate = item.BuyDate,
+        //    ExpirationDate = item.ExpirationDate
+        //};
+
+        //return Ok(pantryService.UpdateItem(itemId, newItem);
+
+        //    return Ok();
+        //}
+
+        [HttpDelete("{itemId:int}")]
+        public IActionResult DeleteItem([FromRoute] int itemId)
+        {
+            if (!userInformation.IsLoggedIn)
+                return BadRequest("Not logged in!");
+
+            return Ok(pantryService.DeleteItem(itemId));
+        }
 
 
     }

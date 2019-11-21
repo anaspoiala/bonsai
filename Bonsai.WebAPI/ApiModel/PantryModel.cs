@@ -16,9 +16,9 @@ namespace Bonsai.WebAPI.ApiModel
 
     public class ItemUpdateModel
     {
-        public int Id { get; set; }
         public string Name { get; set; } 
-        public Quantity Quantity { get; set; } 
+        public float? Amount { get; set; }
+        public string MeasurementUnit { get; set; }
         public DateTime? BuyDate { get; set; }
         public DateTime? ExpirationDate { get; set; }
     }

@@ -23,19 +23,14 @@ namespace Bonsai.Persistence.Repositories
 
         public Domain.Pantry GetPantryOfCurrentAccount()
         {
-            return EntityMapper.ToDomainModel(context.Pantries
-                .Include(p => p.Items)
-                .SingleOrDefault(p => p.UserData.Account.Id == userInformation.CurrentUserId));
+            var dbPantry = GetDbPantryOfCurrentAccount();
+            return EntityMapper.ToDomainModel(dbPantry);
         }
 
         public Item GetItem(long itemId)
         {
             var dbPantry = GetDbPantryOfCurrentAccount();
             var item = dbPantry.Items.SingleOrDefault(i => i.Id == itemId);
-            if (item == null)
-            {
-                throw new Exception("Item does not exist");
-            }
 
             return EntityMapper.ToDomainModel(item);
         }
@@ -45,11 +40,6 @@ namespace Bonsai.Persistence.Repositories
             var dbItem = EntityMapper.ToDatabaseModel(item);
             var dbPantry = GetDbPantryOfCurrentAccount();
 
-            if (dbPantry == null)
-            {
-                throw new Exception("Pantry does not exist");
-            }
-
             dbPantry.Items.Add(dbItem);
             context.Items.Add(dbItem);
 
@@ -58,22 +48,62 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbItem);
         }
 
-        public Item DeleteItem(long itemId)
+        public Item UpdateItem(long itemId, Item item)
         {
+            //var dbItem = GetDbItem(itemId);
+
+            //if (!string.IsNullOrWhiteSpace(item.Name)) dbItem.Name = item.Name;
+            //if (item.Quantity != null)
+            //{
+            //    dbItem.Quantity.Amount = item.Quantity.Amount;
+            //    dbItem.Quantity.Unit = item.Quantity.Unit;
+            //}
+            //if (item.BuyDate.HasValue) dbItem.BuyDate = item.BuyDate.Value;
+            //if (item.ExpirationDate.HasValue) dbItem.ExpirationDate = item.ExpirationDate.Value;
+
+            //context.SaveChanges();
+
+            //return EntityMapper.ToDomainModel(dbItem);
+
+
             throw new NotImplementedException();
         }
 
-        public Item UpdateItem(long itemId, Item item)
+        public Item DeleteItem(long itemId)
         {
-            throw new NotImplementedException();
+            var dbItem = GetDbItem(itemId);
+            var dbPantry = GetDbPantryOfCurrentAccount();
+
+            dbPantry.Items.Remove(dbItem);
+            context.SaveChanges();
+            return EntityMapper.ToDomainModel(dbItem); ;
         }
 
 
         private DB.Pantry GetDbPantryOfCurrentAccount()
         {
-            return context.Pantries
-                .Include(p => p.Items)
+            var pantry = context.Pantries.Include(p => p.Items)
                 .SingleOrDefault(p => p.UserData.Account.Id == userInformation.CurrentUserId);
+
+            if (pantry == null)
+            {
+                throw new Exception("Current user does not have a pantry!");
+            }
+
+            return pantry;
+        }
+
+
+        private DB.Item GetDbItem(long itemId)
+        {
+            var item = GetDbPantryOfCurrentAccount().Items.SingleOrDefault(i => i.Id == itemId);
+
+            if (item == null)
+            {
+                throw new Exception("Item does not exist!");
+            }
+
+            return item;
         }
 
     }

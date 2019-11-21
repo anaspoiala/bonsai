@@ -11,6 +11,8 @@ namespace Bonsai.Service
         Pantry GetCurrentUserPantry();
         Item GetItem(int itemId);
         Item AddItem(Item item);
+        Item UpdateItem(int itemId, Item item);
+        Item DeleteItem(int itemId);
     }
 
     public class PantryService : IPantryService
@@ -49,5 +51,14 @@ namespace Bonsai.Service
             return repository.AddItem(item);
         }
 
+        public Item UpdateItem(int itemId, Item item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Item DeleteItem(int itemId)
+        {
+            return repository.DeleteItem(itemId);
+        }
     }
 }
