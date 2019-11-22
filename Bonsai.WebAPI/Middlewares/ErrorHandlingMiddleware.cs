@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Bonsai.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -29,20 +30,30 @@ namespace Bonsai.WebAPI.Middlewares
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            var code = HttpStatusCode.InternalServerError; // 500 if unexpected
-
-            //if (ex is MyNotFoundException)
-            //{
-            //    code = HttpStatusCode.NotFound;
-            //}
-            //else if (ex is MyUnauthorizedException)
-            //{
-            //    code = HttpStatusCode.Unauthorized;
-            //}
-            //else 
-            //{
-            //    code = HttpStatusCode.InternalServerError;
-            //}
+            HttpStatusCode code;
+            
+            if (ex is AccountNotFoundException || 
+                ex is ItemNotFoundException || 
+                ex is PantryNotFoundException)
+            {
+                code = HttpStatusCode.NotFound;
+            }
+            else if (ex is NotLoggedInException)
+            {
+                code = HttpStatusCode.Unauthorized;
+            }
+            else if (ex is DuplicateItemException)
+            {
+                code = HttpStatusCode.Conflict;
+            }
+            else if (ex is NotImplementedException)
+            {
+                code = HttpStatusCode.NotImplemented;
+            }
+            else
+            {
+                code = HttpStatusCode.InternalServerError;
+            }
 
             var result = JsonConvert.SerializeObject(new { error = ex.Message });
             context.Response.ContentType = "application/json";

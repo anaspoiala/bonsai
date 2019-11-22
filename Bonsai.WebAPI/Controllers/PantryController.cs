@@ -92,7 +92,7 @@ namespace Bonsai.WebAPI.Controllers
         private void RaiseExceptionIfNotAuthenticated()
         {
             if (!userInformation.IsLoggedIn)
-                throw new AuthenticationException("User not logged in!");
+                throw new NotLoggedInException("User not logged in!");
         }
     }
 }
