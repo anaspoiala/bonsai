@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Bonsai.Exceptions;
+﻿using Bonsai.Exceptions;
 using Bonsai.Helpers;
 using Bonsai.Service;
 using Bonsai.WebAPI.ApiModel;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bonsai.WebAPI.Controllers
@@ -17,12 +12,12 @@ namespace Bonsai.WebAPI.Controllers
     [Authorize]
     public class PantryController : ControllerBase
     {
-        public IPantryService pantryService;
+        public IPantryService service;
         public UserInformation userInformation;
 
         public PantryController(IPantryService pantryService, UserInformation userInformation)
         {
-            this.pantryService = pantryService;
+            this.service = pantryService;
             this.userInformation = userInformation;
         }
 
@@ -31,7 +26,7 @@ namespace Bonsai.WebAPI.Controllers
         {
             RaiseExceptionIfNotAuthenticated();
 
-            return Ok(pantryService.GetCurrentUserPantry());
+            return Ok(service.GetCurrentUserPantry());
         }
 
         [HttpGet("{itemId:int}")]
@@ -39,7 +34,7 @@ namespace Bonsai.WebAPI.Controllers
         {
             RaiseExceptionIfNotAuthenticated();
 
-            return Ok(pantryService.GetItem(itemId));
+            return Ok(service.GetItem(itemId));
         }
 
 
@@ -48,7 +43,7 @@ namespace Bonsai.WebAPI.Controllers
         {
             RaiseExceptionIfNotAuthenticated();
 
-            return Ok(pantryService.AddItem(new Domain.Item
+            return Ok(service.AddItem(new Domain.Item
             {
                 Name = item.Name,
                 Quantity = item.Quantity,
@@ -86,13 +81,15 @@ namespace Bonsai.WebAPI.Controllers
         {
             RaiseExceptionIfNotAuthenticated();
 
-            return Ok(pantryService.DeleteItem(itemId));
+            return Ok(service.DeleteItem(itemId));
         }
 
         private void RaiseExceptionIfNotAuthenticated()
         {
             if (!userInformation.IsLoggedIn)
+            {
                 throw new NotLoggedInException("User not logged in!");
+            }
         }
     }
 }
