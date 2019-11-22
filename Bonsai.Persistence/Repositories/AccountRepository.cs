@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bonsai.Exceptions;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace Bonsai.Persistence.Repositories
 
             if (account == null)
             {
-                throw new Exception("Account not found!");
+                throw new AccountNotFoundException();
             }
 
             return passwordHelper.VerifyPassword(password, account.PasswordHash, account.PasswordSalt);
@@ -104,7 +105,7 @@ namespace Bonsai.Persistence.Repositories
 
             if (dbAccount == null || dbAccount.UserData == null)
             {
-                throw new Exception("User account or data not found!");
+                throw new AccountNotFoundException();
             }
 
             dbAccount.UserData.FirstName = newUserData.FirstName;
@@ -123,7 +124,7 @@ namespace Bonsai.Persistence.Repositories
 
             if (dbAccount == null)
             {
-                throw new Exception("User account not found!");
+                throw new AccountNotFoundException();
             }
 
             context.UserAccounts.Remove(dbAccount);

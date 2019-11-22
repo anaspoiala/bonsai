@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bonsai.Exceptions;
 
 namespace Bonsai.Helpers
 {
@@ -12,7 +9,7 @@ namespace Bonsai.Helpers
         public bool IsLoggedIn => CurrentUserIdNullable.HasValue;
 
         public int CurrentUserId => CurrentUserIdNullable == null
-            ? throw new InvalidOperationException("User is not logged in")
+            ? throw new AuthenticationException("User is not logged in")
             : CurrentUserIdNullable.Value;
     }
 }

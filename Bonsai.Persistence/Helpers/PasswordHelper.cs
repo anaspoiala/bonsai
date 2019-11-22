@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Bonsai.Exceptions;
 
 namespace Bonsai.Persistence.Helpers
 {
@@ -13,7 +14,7 @@ namespace Bonsai.Persistence.Helpers
         public void CreatePasswordHashAndSalt(string password, out byte[] hash, out byte[] salt)
         {
             if (string.IsNullOrWhiteSpace(password))
-                throw new Exception("Password cannot be empty!");
+                throw new ValidationException("Password cannot be empty!");
 
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
@@ -25,7 +26,7 @@ namespace Bonsai.Persistence.Helpers
         public bool VerifyPassword(string password, byte[] hash, byte[] salt)
         {
             if (string.IsNullOrWhiteSpace(password))
-                throw new Exception("Password cannot be empty!");
+                throw new ValidationException("Password cannot be empty!");
 
             using (var hmac = new System.Security.Cryptography.HMACSHA512(salt))
             {

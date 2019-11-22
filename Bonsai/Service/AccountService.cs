@@ -3,6 +3,7 @@
 using Bonsai.Domain;
 using Bonsai.Persistence;
 using Bonsai.Validators;
+using Bonsai.Exceptions;
 
 namespace Bonsai.Service
 {
@@ -70,22 +71,22 @@ namespace Bonsai.Service
         {
             if (repository.GetAccountByUsername(username) != null)
             { // Username already exists in the database.
-                throw new Exception("Username already exists!");
+                throw new ValidationException("Username already exists!");
             }
 
             if (TextValidator.IsNullEmptyOrWhiteSpace(username))
             { // Username empty or not provided.
-                throw new Exception("Username can't be empty!");
+                throw new ValidationException("Username can't be empty!");
             }
 
             if (!TextValidator.ContainsBetweenXAndYCharacters(username, 8, 32))
             { // Username doesn't contain between 8 and 32 characters.
-                throw new Exception("Username must contain between 8 and 32 characters!");
+                throw new ValidationException("Username must contain between 8 and 32 characters!");
             }
 
             if (!TextValidator.ContainsLetters(username))
             {  // Username doesn't contain any letters (only numbers or symbols).
-                throw new Exception("Username must contain at least one letter!");
+                throw new ValidationException("Username must contain at least one letter!");
             }
 
 
@@ -95,22 +96,22 @@ namespace Bonsai.Service
         {
             if (TextValidator.IsNullEmptyOrWhiteSpace(password))
             { // Password empty or not provided.
-                throw new Exception("Password can't be empty!");
+                throw new ValidationException("Password can't be empty!");
             }
 
             if (!TextValidator.ContainsLowerLetters(password) || !TextValidator.ContainsUpperLetters(password))
             { // Password doesn't contain both uppercase and lowercase letters.
-                throw new Exception("Password must contain both uppercase and lowecase letters!");
+                throw new ValidationException("Password must contain both uppercase and lowecase letters!");
             }
 
             if (!TextValidator.ContainsNumbers(password) && !TextValidator.ContainsSymbols(password))
             { // Pasword doesn't contain neither numbers nor symbols.
-                throw new Exception("Password must contain at least one number or symbol!");
+                throw new ValidationException("Password must contain at least one number or symbol!");
             }
 
             if (!TextValidator.ContainsBetweenXAndYCharacters(password, 8, 32))
             { // Password doesn't have between 8 and 32 characters length.
-                throw new Exception("Password must contain between 8 and 32 characters!");
+                throw new ValidationException("Password must contain between 8 and 32 characters!");
             }
         }
 
@@ -118,12 +119,12 @@ namespace Bonsai.Service
         {
             if (TextValidator.IsNullEmptyOrWhiteSpace(email))
             { // Email empty or not provided.
-                throw new Exception("Email can't be empty!");
+                throw new ValidationException("Email can't be empty!");
             }
 
             if (!TextValidator.HasEmailFormat(email))
             {  // Email must have the "something@email.anything" format.
-                throw new Exception("Email doesn't have a correct format (something@email.something)!");
+                throw new ValidationException("Email doesn't have a correct format (something@email.something)!");
             }
         }
     }

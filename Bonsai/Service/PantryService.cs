@@ -1,5 +1,6 @@
 ﻿using System;
 using Bonsai.Domain;
+using Bonsai.Exceptions;
 using Bonsai.Helpers;
 using Bonsai.Persistence;
 using Bonsai.Validators;
@@ -25,7 +26,7 @@ namespace Bonsai.Service
             this.repository = repository;
             this.userInformation = userInformation;
         }
-        
+
         public Pantry GetCurrentUserPantry()
         {
             return repository.GetPantryOfCurrentAccount();
@@ -40,12 +41,12 @@ namespace Bonsai.Service
         {
             if (ItemValidator.NameIsEmpty(item))
             {
-                throw new Exception("Item name cannot be empty!");
+                throw new ValidationException("Item name cannot be empty!");
             }
 
             if (ItemValidator.QuantityIsEmpty(item))
             {
-                throw new Exception("Item quantity cannot be empty!");
+                throw new ValidationException("Item quantity cannot be empty!");
             }
 
             return repository.AddItem(item);

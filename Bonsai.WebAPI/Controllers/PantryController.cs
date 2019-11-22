@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bonsai.Exceptions;
 using Bonsai.Helpers;
 using Bonsai.Service;
 using Bonsai.WebAPI.ApiModel;
@@ -28,19 +29,15 @@ namespace Bonsai.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetUserPantry()
         {
-            if (!userInformation.IsLoggedIn)
-                return BadRequest("Not logged in!");
+            RaiseExceptionIfNotAuthenticated();
 
             return Ok(pantryService.GetCurrentUserPantry());
-
-            
         }
 
         [HttpGet("{itemId:int}")]
         public IActionResult GetItem([FromRoute] int itemId)
         {
-            if (!userInformation.IsLoggedIn)
-                return BadRequest("Not logged in!");
+            RaiseExceptionIfNotAuthenticated();
 
             return Ok(pantryService.GetItem(itemId));
         }
@@ -49,8 +46,7 @@ namespace Bonsai.WebAPI.Controllers
         [HttpPost]
         public IActionResult AddItem([FromBody] ItemAddModel item)
         {
-            if (!userInformation.IsLoggedIn)
-                return BadRequest("Not logged in!");
+            RaiseExceptionIfNotAuthenticated();
 
             return Ok(pantryService.AddItem(new Domain.Item
             {
@@ -88,12 +84,15 @@ namespace Bonsai.WebAPI.Controllers
         [HttpDelete("{itemId:int}")]
         public IActionResult DeleteItem([FromRoute] int itemId)
         {
-            if (!userInformation.IsLoggedIn)
-                return BadRequest("Not logged in!");
+            RaiseExceptionIfNotAuthenticated();
 
             return Ok(pantryService.DeleteItem(itemId));
         }
 
-
+        private void RaiseExceptionIfNotAuthenticated()
+        {
+            if (!userInformation.IsLoggedIn)
+                throw new AuthenticationException("User not logged in!");
+        }
     }
 }

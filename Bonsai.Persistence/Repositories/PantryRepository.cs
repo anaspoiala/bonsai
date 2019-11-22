@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Bonsai.Domain;
+using Bonsai.Exceptions;
 using Bonsai.Helpers;
 using Bonsai.Persistence.Context;
 using Bonsai.Persistence.Helpers;
@@ -87,7 +88,7 @@ namespace Bonsai.Persistence.Repositories
 
             if (pantry == null)
             {
-                throw new Exception("Current user does not have a pantry!");
+                throw new PantryNotFoundException();
             }
 
             return pantry;
@@ -100,7 +101,7 @@ namespace Bonsai.Persistence.Repositories
 
             if (item == null)
             {
-                throw new Exception("Item does not exist!");
+                throw new ItemNotFoundException();
             }
 
             return item;
