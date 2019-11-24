@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Bonsai.Domain;
 using Bonsai.Exceptions;
 using Bonsai.Helpers;
@@ -22,7 +21,7 @@ namespace Bonsai.Persistence.Repositories
         }
 
 
-        public Domain.Pantry GetPantryOfCurrentAccount()
+        public Pantry GetPantryOfCurrentAccount()
         {
             var dbPantry = GetDbPantryOfCurrentAccount();
             return EntityMapper.ToDomainModel(dbPantry);
@@ -36,7 +35,7 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(item);
         }
 
-        public Domain.Item AddItem(Domain.Item item)
+        public Item AddItem(Domain.Item item)
         {
             var dbItem = EntityMapper.ToDatabaseModel(item);
             var dbPantry = GetDbPantryOfCurrentAccount();
@@ -51,23 +50,17 @@ namespace Bonsai.Persistence.Repositories
 
         public Item UpdateItem(long itemId, Item item)
         {
-            //var dbItem = GetDbItem(itemId);
+            var dbItem = GetDbItem(itemId);
 
-            //if (!string.IsNullOrWhiteSpace(item.Name)) dbItem.Name = item.Name;
-            //if (item.Quantity != null)
-            //{
-            //    dbItem.Quantity.Amount = item.Quantity.Amount;
-            //    dbItem.Quantity.Unit = item.Quantity.Unit;
-            //}
-            //if (item.BuyDate.HasValue) dbItem.BuyDate = item.BuyDate.Value;
-            //if (item.ExpirationDate.HasValue) dbItem.ExpirationDate = item.ExpirationDate.Value;
+            dbItem.Name = item.Name;
+            dbItem.Quantity.Amount = item.Quantity.Amount;
+            dbItem.Quantity.Unit = item.Quantity.Unit;
+            dbItem.BuyDate = item.BuyDate;
+            dbItem.ExpirationDate = item.ExpirationDate;
 
-            //context.SaveChanges();
+            context.SaveChanges();
 
-            //return EntityMapper.ToDomainModel(dbItem);
-
-
-            throw new NotImplementedException();
+            return EntityMapper.ToDomainModel(dbItem);
         }
 
         public Item DeleteItem(long itemId)
@@ -77,6 +70,7 @@ namespace Bonsai.Persistence.Repositories
 
             dbPantry.Items.Remove(dbItem);
             context.SaveChanges();
+
             return EntityMapper.ToDomainModel(dbItem); ;
         }
 
@@ -86,25 +80,14 @@ namespace Bonsai.Persistence.Repositories
             var pantry = context.Pantries.Include(p => p.Items)
                 .SingleOrDefault(p => p.UserData.Account.Id == userInformation.CurrentUserId);
 
-            if (pantry == null)
-            {
-                throw new PantryNotFoundException();
-            }
-
-            return pantry;
+            return pantry ?? throw new PantryNotFoundException();
         }
-
 
         private DB.Item GetDbItem(long itemId)
         {
             var item = GetDbPantryOfCurrentAccount().Items.SingleOrDefault(i => i.Id == itemId);
 
-            if (item == null)
-            {
-                throw new ItemNotFoundException();
-            }
-
-            return item;
+            return item ?? throw new ItemNotFoundException();
         }
 
     }

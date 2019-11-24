@@ -9,7 +9,8 @@ namespace Bonsai.WebAPI.ApiModel
     public class ItemAddModel
     {
         public string Name { get; set; }
-        public Quantity Quantity { get; set; }
+        public float Amount { get; set; }
+        public string MeasurementUnit { get; set; }
         public DateTime? BuyDate { get; set; }
         public DateTime? ExpirationDate { get; set; }
     }
@@ -17,9 +18,9 @@ namespace Bonsai.WebAPI.ApiModel
     public class ItemUpdateModel
     {
         public string Name { get; set; } 
-        public float? Amount { get; set; }
+        public float Amount { get; set; }
         public string MeasurementUnit { get; set; }
-        public DateTime? BuyDate { get; set; }
-        public DateTime? ExpirationDate { get; set; }
+        public DateTime BuyDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
     }
 }

@@ -39,6 +39,26 @@ namespace Bonsai.Service
 
         public Item AddItem(Item item)
         {
+            ValidateItem(item);
+
+            return repository.AddItem(item);
+        }
+
+        public Item UpdateItem(int itemId, Item item)
+        {
+            ValidateItem(item);
+
+            return repository.UpdateItem(itemId, item);
+        }
+
+        public Item DeleteItem(int itemId)
+        {
+            return repository.DeleteItem(itemId);
+        }
+
+
+        private static void ValidateItem(Item item)
+        {
             if (ItemValidator.NameIsEmpty(item))
             {
                 throw new ValidationException("Item name cannot be empty!");
@@ -48,18 +68,6 @@ namespace Bonsai.Service
             {
                 throw new ValidationException("Item quantity cannot be empty!");
             }
-
-            return repository.AddItem(item);
-        }
-
-        public Item UpdateItem(int itemId, Item item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Item DeleteItem(int itemId)
-        {
-            return repository.DeleteItem(itemId);
         }
     }
 }
