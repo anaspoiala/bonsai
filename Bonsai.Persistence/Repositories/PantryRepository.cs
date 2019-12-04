@@ -27,7 +27,7 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbPantry);
         }
 
-        public Item GetItem(long itemId)
+        public PantryItem GetItem(long itemId)
         {
             var dbPantry = GetDbPantryOfCurrentAccount();
             var item = dbPantry.Items.SingleOrDefault(i => i.Id == itemId);
@@ -35,24 +35,30 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(item);
         }
 
-        public Item AddItem(Domain.Item item)
+        public bool ItemExists(long itemId)
+        {
+            var item = GetDbPantryOfCurrentAccount().Items.SingleOrDefault(i => i.Id == itemId);
+            return item != null;
+        }
+
+        public PantryItem AddItem(Domain.PantryItem item)
         {
             var dbItem = EntityMapper.ToDatabaseModel(item);
             var dbPantry = GetDbPantryOfCurrentAccount();
 
             dbPantry.Items.Add(dbItem);
-            context.Items.Add(dbItem);
+            //context.Items.Add(dbItem);
 
             context.SaveChanges();
 
             return EntityMapper.ToDomainModel(dbItem);
         }
 
-        public Item UpdateItem(long itemId, Item item)
+        public PantryItem UpdateItem(long itemId, PantryItem item)
         {
             var dbItem = GetDbItem(itemId);
 
-            dbItem.Name = item.Name;
+            //dbItem.Name = item.Name;
             dbItem.Quantity.Amount = item.Quantity.Amount;
             dbItem.Quantity.Unit = item.Quantity.Unit;
             dbItem.BuyDate = item.BuyDate;
@@ -63,7 +69,7 @@ namespace Bonsai.Persistence.Repositories
             return EntityMapper.ToDomainModel(dbItem);
         }
 
-        public Item DeleteItem(long itemId)
+        public PantryItem DeleteItem(long itemId)
         {
             var dbItem = GetDbItem(itemId);
             var dbPantry = GetDbPantryOfCurrentAccount();
@@ -75,7 +81,7 @@ namespace Bonsai.Persistence.Repositories
         }
 
 
-        private DB.Pantry GetDbPantryOfCurrentAccount()
+        private DB.Items.Pantry GetDbPantryOfCurrentAccount()
         {
             var pantry = context.Pantries.Include(p => p.Items)
                 .SingleOrDefault(p => p.UserData.Account.Id == userInformation.CurrentUserId);
@@ -83,7 +89,7 @@ namespace Bonsai.Persistence.Repositories
             return pantry ?? throw new PantryNotFoundException();
         }
 
-        private DB.Item GetDbItem(long itemId)
+        private DB.Items.PantryItem GetDbItem(long itemId)
         {
             var item = GetDbPantryOfCurrentAccount().Items.SingleOrDefault(i => i.Id == itemId);
 

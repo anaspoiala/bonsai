@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Bonsai.Domain
 {
-    public class Item
+    /// <summary>
+    /// Represents a generic item.
+    /// </summary>
+    public class Item : ITaggable
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public Quantity Quantity { get; set; }
-        public DateTime? BuyDate { get; set; }
-        public DateTime? ExpirationDate { get; set; }
 
+        public List<Tag> Tags { get; set; }
     }
 }
-

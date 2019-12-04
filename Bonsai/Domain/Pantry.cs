@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Bonsai.Domain
 {
     public class Pantry
     {
         public long Id { get; set; }
-        public List<Item> Items { get; set; }
+        public List<PantryItem> Items { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using Bonsai.Domain;
 using Bonsai.Domain.Enums;
-using Bonsai.Exceptions;
 using Bonsai.Helpers;
 using Bonsai.Service;
 using Bonsai.WebAPI.ApiModel;
@@ -27,7 +26,7 @@ namespace Bonsai.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetUserPantry()
         {
-            RaiseExceptionIfNotAuthenticated();
+            userInformation.ThrowErrorIfNotLoggedIn();
 
             return Ok(service.GetCurrentUserPantry());
         }
@@ -35,22 +34,22 @@ namespace Bonsai.WebAPI.Controllers
         [HttpGet("{itemId:int}")]
         public IActionResult GetItem([FromRoute] int itemId)
         {
-            RaiseExceptionIfNotAuthenticated();
+            userInformation.ThrowErrorIfNotLoggedIn();
             return Ok(service.GetItem(itemId));
         }
 
         [HttpPost]
         public IActionResult AddItem([FromBody] ItemAddModel item)
         {
-            RaiseExceptionIfNotAuthenticated();
+            userInformation.ThrowErrorIfNotLoggedIn();
 
-            return base.Ok(service.AddItem(new Item
+            return base.Ok(service.AddItem(new PantryItem
             {
-                Name = item.Name,
+               // Name = item.Name,
                 Quantity = new Quantity
                 {
                     Amount = item.Amount,
-                    Unit = ParseMeasurementUnit(item.MeasurementUnit)
+                    Unit = item.MeasurementUnit
                 },
                 BuyDate = item.BuyDate,
                 ExpirationDate = item.ExpirationDate
@@ -61,15 +60,15 @@ namespace Bonsai.WebAPI.Controllers
         [HttpPut("{itemId:int}")]
         public IActionResult UpdateItem([FromRoute] int itemId, [FromBody] ItemUpdateModel item)
         {
-            RaiseExceptionIfNotAuthenticated();
+            userInformation.ThrowErrorIfNotLoggedIn();
 
-            var newItem = new Item
+            var newItem = new PantryItem
             {
-                Name = item.Name,
+                //Name = item.Name,
                 Quantity = new Quantity
                 {
                     Amount = item.Amount,
-                    Unit = ParseMeasurementUnit(item.MeasurementUnit)
+                    Unit = item.MeasurementUnit
                 },
                 BuyDate = item.BuyDate,
                 ExpirationDate = item.ExpirationDate
@@ -81,23 +80,11 @@ namespace Bonsai.WebAPI.Controllers
         [HttpDelete("{itemId:int}")]
         public IActionResult DeleteItem([FromRoute] int itemId)
         {
-            RaiseExceptionIfNotAuthenticated();
+            userInformation.ThrowErrorIfNotLoggedIn();
+
             return Ok(service.DeleteItem(itemId));
         }
 
-        private void RaiseExceptionIfNotAuthenticated()
-        {
-            if (!userInformation.IsLoggedIn)
-            {
-                throw new NotLoggedInException("User not logged in!");
-            }
-        }
-
-        private MeasurementUnit ParseMeasurementUnit(string unit)
-        {
-            return Enum.TryParse(typeof(MeasurementUnit), unit, out object result)
-                ? (MeasurementUnit)result
-                : MeasurementUnit.UNIT;
-        }
+        
     }
 }

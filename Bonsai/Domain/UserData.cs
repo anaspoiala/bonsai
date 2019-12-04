@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Bonsai.Domain
 {
@@ -15,5 +13,6 @@ namespace Bonsai.Domain
         public Pantry Pantry { get; set; }
         public RecipeCatalog RecipeCatalog { get; set; }
         public MealPlanCalendar MealPlanCalendar { get; set; }
+        public List<Tag> Tags { get; set; }
     }
 }

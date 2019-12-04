@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using Bonsai.Persistence.Model.Items;
+using Bonsai.Persistence.Model.MealPlans;
+using Bonsai.Persistence.Model.Recipes;
+using Bonsai.Persistence.Model.Tagging;
 
-namespace Bonsai.Persistence.Model
+namespace Bonsai.Persistence.Model.Accounts
 {
     public class UserData
     {
@@ -20,5 +23,7 @@ namespace Bonsai.Persistence.Model
 
         public long AccountId { get; set; }
         public UserAccount Account { get; set; }
+
+        public List<Tag> Tags { get; set; }
     }
 }

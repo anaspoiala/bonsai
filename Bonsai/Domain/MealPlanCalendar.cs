@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Bonsai.Domain
 {
@@ -9,6 +6,5 @@ namespace Bonsai.Domain
     {
         public long Id { get; set; }
         public List<MealPlan> MealPlans { get; set; }
-
     }
 }

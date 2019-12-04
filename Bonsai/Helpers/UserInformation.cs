@@ -11,5 +11,13 @@ namespace Bonsai.Helpers
         public int CurrentUserId => CurrentUserIdNullable == null
             ? throw new AuthenticationException("User is not logged in")
             : CurrentUserIdNullable.Value;
+
+        public void ThrowErrorIfNotLoggedIn()
+        {
+            if (!IsLoggedIn)
+            {
+                throw new NotLoggedInException("User not logged in!");
+            }
+        }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using Bonsai.Persistence.Model.Accounts;
 
-namespace Bonsai.Persistence.Model
+namespace Bonsai.Persistence.Model.MealPlans
 {
     public class MealPlanCalendar
     {

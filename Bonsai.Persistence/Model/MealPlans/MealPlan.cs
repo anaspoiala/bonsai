@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using Bonsai.Persistence.Model.Recipes;
 
-namespace Bonsai.Persistence.Model
+namespace Bonsai.Persistence.Model.MealPlans
 {
     public class MealPlan
     {
@@ -13,7 +13,5 @@ namespace Bonsai.Persistence.Model
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public List<PlannedRecipe> PlannedRecipes { get; set; }
-        //public long MealPlanHistoryId { get; set; }
-        //public MealPlanHistory MealPlanHistory { get; set; }
     }
 }

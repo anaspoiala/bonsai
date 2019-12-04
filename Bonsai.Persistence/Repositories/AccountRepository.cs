@@ -54,10 +54,10 @@ namespace Bonsai.Persistence.Repositories
         public Domain.UserAccount CreateAccount(Domain.UserAccount account)
         {
             var newAccount = EntityMapper.ToDatabaseModel(account);
-            var newUserData = new DB.UserData();
-            var newPantry = new DB.Pantry();
-            var newMealPlanCalendar = new DB.MealPlanCalendar();
-            var newRecipeCatalog = new DB.RecipeCatalog();
+            var newUserData = new DB.Accounts.UserData();
+            var newPantry = new DB.Items.Pantry();
+            var newMealPlanCalendar = new DB.MealPlans.MealPlanCalendar();
+            var newRecipeCatalog = new DB.Recipes.RecipeCatalog();
 
             // Hash password
             passwordHelper.CreatePasswordHashAndSalt(account.Password, out var hash, out var salt);
@@ -71,11 +71,11 @@ namespace Bonsai.Persistence.Repositories
             newUserData.Gender = account.UserData?.Gender ?? "";
 
             // Create Pantry, MealPlanCalendar and RecipeCatalog
-            newPantry.Items = new List<DB.Item>();
+            newPantry.Items = new List<DB.Items.PantryItem>();
             newPantry.UserData = newUserData;
-            newMealPlanCalendar.MealPlans = new List<DB.MealPlan>();
+            newMealPlanCalendar.MealPlans = new List<DB.MealPlans.MealPlan>();
             newMealPlanCalendar.UserData = newUserData;
-            newRecipeCatalog.Recipes = new List<DB.Recipe>();
+            newRecipeCatalog.Recipes = new List<DB.Recipes.Recipe>();
             newRecipeCatalog.UserData = newUserData;
 
             // Set account fields

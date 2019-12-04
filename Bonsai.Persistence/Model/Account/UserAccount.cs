@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bonsai.Persistence.Model
+namespace Bonsai.Persistence.Model.Accounts
 {
     public class UserAccount
     {

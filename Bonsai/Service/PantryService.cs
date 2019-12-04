@@ -10,10 +10,11 @@ namespace Bonsai.Service
     public interface IPantryService
     {
         Pantry GetCurrentUserPantry();
-        Item GetItem(int itemId);
-        Item AddItem(Item item);
-        Item UpdateItem(int itemId, Item item);
-        Item DeleteItem(int itemId);
+        PantryItem GetItem(int itemId);
+        PantryItem AddItem(PantryItem item);
+        PantryItem UpdateItem(int itemId, PantryItem item);
+        PantryItem DeleteItem(int itemId);
+        bool ItemExists(long id);
     }
 
     public class PantryService : IPantryService
@@ -32,32 +33,37 @@ namespace Bonsai.Service
             return repository.GetPantryOfCurrentAccount();
         }
 
-        public Item GetItem(int itemId)
+        public PantryItem GetItem(int itemId)
         {
             return repository.GetItem(itemId);
         }
 
-        public Item AddItem(Item item)
+        public bool ItemExists(long id)
+        {
+            return repository.ItemExists(id);
+        }
+
+        public PantryItem AddItem(PantryItem item)
         {
             ValidateItem(item);
 
             return repository.AddItem(item);
         }
 
-        public Item UpdateItem(int itemId, Item item)
+        public PantryItem UpdateItem(int itemId, PantryItem item)
         {
             ValidateItem(item);
 
             return repository.UpdateItem(itemId, item);
         }
 
-        public Item DeleteItem(int itemId)
+        public PantryItem DeleteItem(int itemId)
         {
             return repository.DeleteItem(itemId);
         }
 
 
-        private static void ValidateItem(Item item)
+        private static void ValidateItem(PantryItem item)
         {
             if (ItemValidator.NameIsEmpty(item))
             {

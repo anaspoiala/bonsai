@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using Bonsai.Persistence.Model.Accounts;
 
-namespace Bonsai.Persistence.Model
+namespace Bonsai.Persistence.Model.Items
 {
-    public class RecipeCatalog
+    public class Pantry
     {
         [Key]
         public long Id { get; set; }
-        public List<Recipe> Recipes { get; set; }
+        public List<PantryItem> Items { get; set; }
 
         public long UserDataId { get; set; }
         public UserData UserData { get; set; }

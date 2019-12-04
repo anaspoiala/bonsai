@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using Bonsai.Persistence.Model.MealPlans;
 
-namespace Bonsai.Persistence.Model
+namespace Bonsai.Persistence.Model.Recipes
 {
     public class PlannedRecipe
     {
-        [Key]
         public long Id { get; set; }
         public DateTime PlannedDate { get; set; }
         public Domain.Enums.TimeOfDay PlannedTime { get; set; }
