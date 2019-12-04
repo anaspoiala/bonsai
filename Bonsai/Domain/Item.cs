@@ -10,6 +10,6 @@ namespace Bonsai.Domain
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public List<Tag> Tags { get; set; }
+        public List<Tag> Tags { get; set; } = new List<Tag>();
     }
 }

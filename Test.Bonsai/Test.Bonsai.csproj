@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bonsai.Persistence\Bonsai.Persistence.csproj" />
     <ProjectReference Include="..\Bonsai\Bonsai.csproj" />
   </ItemGroup>
 

@@ -62,7 +62,7 @@ namespace Bonsai.Persistence.Helpers
                 Pantry = ToDomainModel(db.Pantry),
                 RecipeCatalog = ToDomainModel(db.RecipeCatalog),
                 MealPlanCalendar = ToDomainModel(db.MealPlanCalendar),
-                Tags = db.Tags.Select(tag => ToDomainModel(tag)).ToList()
+                Tags = db.Tags?.Select(tag => ToDomainModel(tag))?.ToList() ?? null
             };
         }
 
@@ -83,7 +83,7 @@ namespace Bonsai.Persistence.Helpers
                 Pantry = ToDatabaseModel(d.Pantry),
                 RecipeCatalog = ToDatabaseModel(d.RecipeCatalog),
                 MealPlanCalendar = ToDatabaseModel(d.MealPlanCalendar),
-                Tags = d.Tags.Select(tag => ToDatabaseModel(tag)).ToList()
+                Tags = d.Tags?.Select(tag => ToDatabaseModel(tag))?.ToList() ?? null
             };
         }
 
@@ -103,7 +103,7 @@ namespace Bonsai.Persistence.Helpers
             return new Domain.Pantry
             {
                 Id = db.Id,
-                Items = db.Items.Select(i => ToDomainModel(i)).ToList()
+                Items = db.Items?.Select(i => ToDomainModel(i))?.ToList() ?? null
             };
         }
 
@@ -117,7 +117,7 @@ namespace Bonsai.Persistence.Helpers
             return new Database.Items.Pantry
             {
                 Id = d.Id,
-                Items = d.Items.Select(i => ToDatabaseModel(i)).ToList()
+                Items = d.Items?.Select(i => ToDatabaseModel(i))?.ToList() ?? null
             };
         }
 
@@ -134,7 +134,7 @@ namespace Bonsai.Persistence.Helpers
             {
                 Id = db.Id,
                 Name = db.Name,
-                Tags = db.Tags.Select(tag => ToDomainModel(tag.Tag)).ToList()
+                Tags = db.Tags?.Select(tag => ToDomainModel(tag.Tag))?.ToList() ?? null
             };
         }
 
@@ -153,11 +153,11 @@ namespace Bonsai.Persistence.Helpers
                 PantryItems = new List<Database.Items.PantryItem>()
             };
 
-            db.Tags = d.Tags.Select(tag => new Database.Tagging.ItemTag
+            db.Tags = d.Tags?.Select(tag => new Database.Tagging.ItemTag
             {
                 Tag = ToDatabaseModel(tag),
                 Item = db
-            }).ToList();
+            })?.ToList() ?? null;
 
             return db;
         }
@@ -178,7 +178,7 @@ namespace Bonsai.Persistence.Helpers
                 Quantity = db.Quantity,
                 BuyDate = db.BuyDate,
                 ExpirationDate = db.ExpirationDate,
-                Tags = db.Tags.Select(tag => ToDomainModel(tag.Tag)).ToList()
+                Tags = db.Tags?.Select(tag => ToDomainModel(tag.Tag))?.ToList() ?? null
             };
         }
 
@@ -198,11 +198,11 @@ namespace Bonsai.Persistence.Helpers
                 ExpirationDate = d.ExpirationDate,
             };
 
-            db.Tags = d.Tags.Select(tag => new Database.Tagging.PantryItemTag
+            db.Tags = d.Tags?.Select(tag => new Database.Tagging.PantryItemTag
             {
                 Tag = ToDatabaseModel(tag),
                 PantryItem = db
-            }).ToList();
+            })?.ToList() ?? null;
 
             return db;
         }
@@ -257,7 +257,7 @@ namespace Bonsai.Persistence.Helpers
             return new Domain.RecipeCatalog
             {
                 Id = db.Id,
-                Recipes = db.Recipes.Select(r => ToDomainModel(r)).ToList()
+                Recipes = db.Recipes?.Select(r => ToDomainModel(r))?.ToList() ?? null
             };
         }
 
@@ -271,7 +271,7 @@ namespace Bonsai.Persistence.Helpers
             return new Database.Recipes.RecipeCatalog
             {
                 Id = d.Id,
-                Recipes = d.Recipes.Select(r => ToDatabaseModel(r)).ToList()
+                Recipes = d.Recipes?.Select(r => ToDatabaseModel(r))?.ToList() ?? null
             };
         }
 
@@ -289,12 +289,12 @@ namespace Bonsai.Persistence.Helpers
                 Id = db.Id,
                 Name = db.Name,
                 Steps = db.Steps,
-                Ingredients = db.RecipeItems
-                     .Select(recipeItem => ToDomainModel(recipeItem))
-                     .ToList(),
-                Tags = db.Tags
-                     .Select(recipeTag => ToDomainModel(recipeTag.Tag))
-                     .ToList()
+                Ingredients = db.RecipeItems?
+                     .Select(recipeItem => ToDomainModel(recipeItem))?
+                     .ToList() ?? null,
+                Tags = db.Tags?
+                     .Select(recipeTag => ToDomainModel(recipeTag.Tag))?
+                     .ToList() ?? null
             };
         }
 
@@ -313,18 +313,17 @@ namespace Bonsai.Persistence.Helpers
                 PlannedRecipes = new List<Database.Recipes.PlannedRecipe>()
             };
 
-            db.RecipeItems = d.Ingredients.Select(ingredient => new Database.Items.RecipeItem
+            db.RecipeItems = d.Ingredients?.Select(ingredient => new Database.Items.RecipeItem
             {
                 Item = ToDatabaseModel(ingredient.Item),
                 Recipe = db
-            })
-            .ToList();
+            })?.ToList() ?? null;
 
-            db.Tags = d.Tags.Select(tag => new Database.Tagging.RecipeTag
+            db.Tags = d.Tags?.Select(tag => new Database.Tagging.RecipeTag
             {
                 Tag = ToDatabaseModel(tag),
                 Recipe = db
-            }).ToList();
+            })?.ToList() ?? null;
 
             return db;
         }
@@ -379,7 +378,7 @@ namespace Bonsai.Persistence.Helpers
             return new Domain.MealPlanCalendar
             {
                 Id = db.Id,
-                MealPlans = db.MealPlans.Select(mp => ToDomainModel(mp)).ToList()
+                MealPlans = db.MealPlans?.Select(mp => ToDomainModel(mp))?.ToList() ?? null
             };
         }
 
@@ -393,7 +392,7 @@ namespace Bonsai.Persistence.Helpers
             return new Database.MealPlans.MealPlanCalendar
             {
                 Id = d.Id,
-                MealPlans = d.MealPlans.Select(mp => ToDatabaseModel(mp)).ToList()
+                MealPlans = d.MealPlans?.Select(mp => ToDatabaseModel(mp))?.ToList() ?? null
             };
         }
 
@@ -412,9 +411,9 @@ namespace Bonsai.Persistence.Helpers
                 Name = db.Name,
                 DateFrom = db.DateFrom,
                 DateTo = db.DateTo,
-                PlannedRecipes = db.PlannedRecipes
-                    .Select(plannedRecipe => ToDomainModel(plannedRecipe))
-                    .ToList()
+                PlannedRecipes = db.PlannedRecipes?
+                    .Select(plannedRecipe => ToDomainModel(plannedRecipe))?
+                    .ToList() ?? null
             };
         }
 
@@ -431,9 +430,9 @@ namespace Bonsai.Persistence.Helpers
                 Name = d.Name,
                 DateFrom = d.DateFrom,
                 DateTo = d.DateTo,
-                PlannedRecipes = d.PlannedRecipes
-                    .Select(plannedRecipe => ToDatabaseModel(plannedRecipe))
-                    .ToList()
+                PlannedRecipes = d.PlannedRecipes?
+                    .Select(plannedRecipe => ToDatabaseModel(plannedRecipe))?
+                    .ToList() ?? null
             };
         }
 

@@ -9,12 +9,12 @@ namespace Bonsai.Domain
     {
         public long Id { get; set; }
         public Item Item { get; set; }
-        public Quantity RequiredQuantity { get; set; }
+        public Quantity RequiredQuantity { get; set; } = new Quantity();
 
         /// <summary>
         /// A list of words describing the state of the item. 
         ///     E.g. "1 cup of rice, steamed", "1 onion, chopped"
         /// </summary>
-        public List<string> Adjectives { get; set; }
+        public List<string> Adjectives { get; set; } = new List<string>();
     }
 }

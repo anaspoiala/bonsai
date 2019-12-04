@@ -9,7 +9,7 @@ namespace Bonsai.Domain
         public string Name { get; set; }
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
-        public List<PlannedRecipe> PlannedRecipes { get; set; }
+        public List<PlannedRecipe> PlannedRecipes { get; set; } = new List<PlannedRecipe>();
 
     }
 }

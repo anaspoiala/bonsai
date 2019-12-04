@@ -10,11 +10,11 @@ namespace Bonsai.Domain
     {
         public long Id { get; set; }
         public Item Item { get; set; }
-        public Quantity Quantity { get; set; }
+        public Quantity Quantity { get; set; } = new Quantity();
         public DateTime? BuyDate { get; set; }
         public DateTime? ExpirationDate { get; set; }
 
-        public List<Tag> Tags { get; set; }
+        public List<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
 
